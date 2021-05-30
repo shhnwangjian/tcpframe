@@ -34,7 +34,7 @@ type Connection struct {
 	propertyLock sync.RWMutex
 }
 
-// 创建连接的方法
+// NewConnection 创建连接的方法
 func NewConnection(server giface.GServer, conn *net.TCPConn, connID uint32, msgHandler giface.GMsgHandle) *Connection {
 	// 初始化Conn属性
 	c := &Connection{
@@ -54,7 +54,9 @@ func NewConnection(server giface.GServer, conn *net.TCPConn, connID uint32, msgH
 	return c
 }
 
-/* 处理conn读数据的Goroutine */
+/*
+	处理conn读数据的Goroutine
+*/
 func (c *Connection) StartReader() {
 	fmt.Println("Reader Goroutine is running")
 	defer fmt.Println(c.RemoteAddr().String(), " conn reader exit!")
@@ -106,7 +108,7 @@ func (c *Connection) StartReader() {
 	}
 }
 
-// 启动连接，让当前连接开始工作
+// Start 启动连接，让当前连接开始工作
 func (c *Connection) Start() {
 	// 开启用户从客户端读取数据流程的Goroutine
 	go c.StartReader()
@@ -156,7 +158,7 @@ func (c *Connection) StartWriter() {
 	}
 }
 
-// 直接将Message数据发送数据给远程的TCP客户端
+// SendMsg 直接将Message数据发送数据给远程的TCP客户端
 func (c *Connection) SendMsg(msgId uint32, data []byte) (err error) {
 	if c.isClosed == true {
 		return errors.New("connection closed")
@@ -197,7 +199,7 @@ func (c *Connection) SendBuffMsg(msgId uint32, data []byte) error {
 	return nil
 }
 
-// 停止连接，结束当前连接状态
+// Stop 停止连接，结束当前连接状态
 func (c *Connection) Stop() {
 	// 如果当前链接已经关闭
 	if c.isClosed == true {
@@ -222,22 +224,22 @@ func (c *Connection) Stop() {
 	close(c.msgBuffChan)
 }
 
-// 从当前连接获取原始的socket TCPConn
+// GetTCPConnection 从当前连接获取原始的socket TCPConn
 func (c *Connection) GetTCPConnection() *net.TCPConn {
 	return c.Conn
 }
 
-// 获取当前连接ID
+// GetConnID 获取当前连接ID
 func (c *Connection) GetConnID() uint32 {
 	return c.ConnID
 }
 
-// 获取远程客户端地址信息
+// RemoteAddr 获取远程客户端地址信息
 func (c *Connection) RemoteAddr() net.Addr {
 	return c.Conn.RemoteAddr()
 }
 
-// 设置链接属性
+// SetProperty 设置链接属性
 func (c *Connection) SetProperty(key string, value interface{}) {
 	c.propertyLock.Lock()
 	defer c.propertyLock.Unlock()
@@ -245,7 +247,7 @@ func (c *Connection) SetProperty(key string, value interface{}) {
 	c.property[key] = value
 }
 
-// 获取链接属性
+// GetProperty 获取链接属性
 func (c *Connection) GetProperty(key string) (interface{}, error) {
 	c.propertyLock.RLock()
 	defer c.propertyLock.RUnlock()
@@ -257,7 +259,7 @@ func (c *Connection) GetProperty(key string) (interface{}, error) {
 	}
 }
 
-// 移除链接属性
+// RemoveProperty 移除链接属性
 func (c *Connection) RemoveProperty(key string) {
 	c.propertyLock.Lock()
 	defer c.propertyLock.Unlock()

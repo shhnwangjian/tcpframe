@@ -23,7 +23,7 @@ func NewMsgHandle() *MsgHandle {
 	}
 }
 
-// 以非阻塞方式处理消息
+// DoMsgHandler 以非阻塞方式处理消息
 func (h *MsgHandle) DoMsgHandler(request giface.GRequest) {
 	handler, ok := h.Apis[request.GetMsgID()]
 	if !ok {
@@ -37,7 +37,7 @@ func (h *MsgHandle) DoMsgHandler(request giface.GRequest) {
 	handler.PostHandle(request)
 }
 
-// 为消息添加具体的处理逻辑
+// AddRouter 为消息添加具体的处理逻辑
 func (h *MsgHandle) AddRouter(msgId uint32, router giface.GRouter) {
 	// 判断当前msg绑定的API处理方法是否已经存在
 	if _, ok := h.Apis[msgId]; ok {
@@ -49,7 +49,7 @@ func (h *MsgHandle) AddRouter(msgId uint32, router giface.GRouter) {
 	fmt.Println("Add api msgId = ", msgId)
 }
 
-// 启动一个Worker工作流程
+// StartOneWorker 启动一个Worker工作流程
 func (h *MsgHandle) StartOneWorker(workerID int, taskQueue chan giface.GRequest) {
 	fmt.Println("Worker ID = ", workerID, " is started.")
 	// 不断的等待队列中的消息
@@ -62,7 +62,7 @@ func (h *MsgHandle) StartOneWorker(workerID int, taskQueue chan giface.GRequest)
 	}
 }
 
-// 启动worker工作池
+// StartWorkerPool 启动worker工作池
 func (h *MsgHandle) StartWorkerPool() {
 	// 遍历需要启动worker的数量，依此启动
 	for i := 0; i < int(h.WorkerPoolSize); i++ {
@@ -74,7 +74,7 @@ func (h *MsgHandle) StartWorkerPool() {
 	}
 }
 
-// 将消息交给TaskQueue,由worker进行处理
+// SendMsgToTaskQueue 将消息交给TaskQueue,由worker进行处理
 func (h *MsgHandle) SendMsgToTaskQueue(request giface.GRequest) {
 	// 根据ConnID来分配当前的连接应该由哪个worker负责处理
 	// 轮询的平均分配法则

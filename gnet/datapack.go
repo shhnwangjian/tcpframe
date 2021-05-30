@@ -11,10 +11,10 @@ import (
 	"github.com/shhnwangjian/tcpframe/utils"
 )
 
-// 封包拆包类实例，暂时不需要成员
+// DataPack 封包拆包类实例，暂时不需要成员
 type DataPack struct{}
 
-// 封包拆包实例初始化方法
+// NewDataPack 封包拆包实例初始化方法
 func NewDataPack() *DataPack {
 	return &DataPack{}
 }

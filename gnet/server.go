@@ -10,7 +10,7 @@ import (
 	"github.com/shhnwangjian/tcpframe/utils"
 )
 
-// GServer接口实现，定义一个Server服务类
+// Server GServer接口实现，定义一个Server服务类
 type Server struct {
 	// 服务器的名称
 	Name string
@@ -31,6 +31,8 @@ type Server struct {
 }
 
 //============== 定义当前客户端链接的handle api ===========
+
+// CallBackToClient 客户端链接
 func CallBackToClient(conn *net.TCPConn, data []byte, cnt int) error {
 	// 回显业务
 	fmt.Println("[Conn Handle] CallBackToClient ... ")
@@ -43,7 +45,7 @@ func CallBackToClient(conn *net.TCPConn, data []byte, cnt int) error {
 
 //============== 实现 giface.GServer 里的全部接口方法 ========
 
-// 启动网络服务
+// Start 启动网络服务
 func (s *Server) Start() {
 	fmt.Printf("[START] Server listenner at IP: %s, Port %d, is starting\n", s.IP, s.Port)
 	fmt.Printf("[Zinx] Version: %s, MaxConn: %d,  MaxPacketSize: %d\n",
@@ -120,7 +122,7 @@ func (s *Server) Serve() {
 	}
 }
 
-// 路由功能：给当前服务注册一个路由业务方法，供客户端链接处理使用
+// AddRouter 路由功能：给当前服务注册一个路由业务方法，供客户端链接处理使用
 func (s *Server) AddRouter(msgId uint32, msgHandler giface.GRouter) {
 	s.msgHandler.AddRouter(msgId, msgHandler)
 }
@@ -129,17 +131,17 @@ func (s *Server) GetConnMgr() giface.GConnManager {
 	return s.ConnMgr
 }
 
-// 设置该Server的连接创建时Hook函数
+// SetOnConnStart 设置该Server的连接创建时Hook函数
 func (s *Server) SetOnConnStart(hookFunc func(giface.GConnection)) {
 	s.OnConnStart = hookFunc
 }
 
-// 设置该Server的连接断开时的Hook函数
+// SetOnConnStop 设置该Server的连接断开时的Hook函数
 func (s *Server) SetOnConnStop(hookFunc func(giface.GConnection)) {
 	s.OnConnStop = hookFunc
 }
 
-// 调用连接OnConnStart Hook函数
+// CallOnConnStart 调用连接OnConnStart Hook函数
 func (s *Server) CallOnConnStart(conn giface.GConnection) {
 	if s.OnConnStart != nil {
 		fmt.Println("---> CallOnConnStart....")
@@ -147,7 +149,7 @@ func (s *Server) CallOnConnStart(conn giface.GConnection) {
 	}
 }
 
-// 调用连接OnConnStop Hook函数
+// CallOnConnStop 调用连接OnConnStop Hook函数
 func (s *Server) CallOnConnStop(conn giface.GConnection) {
 	if s.OnConnStop != nil {
 		fmt.Println("---> CallOnConnStop....")
@@ -156,7 +158,7 @@ func (s *Server) CallOnConnStop(conn giface.GConnection) {
 }
 
 /*
-  创建一个服务器句柄
+NewServer  创建一个服务器句柄
 */
 func NewServer() giface.GServer {
 	utils.GlobalConfig.Reload()

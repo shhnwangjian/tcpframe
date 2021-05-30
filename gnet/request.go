@@ -9,17 +9,17 @@ type Request struct {
 	msg  giface.GMessage    // 客户端请求的数据
 }
 
-// 获取请求连接信息
+// GetConnection 获取请求连接信息
 func (r *Request) GetConnection() giface.GConnection {
 	return r.conn
 }
 
-// 获取请求消息的数据
+// GetData 获取请求消息的数据
 func (r *Request) GetData() []byte {
 	return r.msg.GetData()
 }
 
-// 获取请求的消息的ID
+// GetMsgID 获取请求的消息的ID
 func (r *Request) GetMsgID() uint32 {
 	return r.msg.GetMsgId()
 }

@@ -9,7 +9,7 @@ import (
 )
 
 /*
-	连接管理模块
+ConnManager	连接管理模块
 */
 type ConnManager struct {
 	connections map[uint32]giface.GConnection // 管理的连接信息
@@ -17,7 +17,7 @@ type ConnManager struct {
 }
 
 /*
-	创建一个链接管理
+NewConnManager	创建一个链接管理
 */
 func NewConnManager() *ConnManager {
 	return &ConnManager{
@@ -25,12 +25,12 @@ func NewConnManager() *ConnManager {
 	}
 }
 
-// 获取当前连接长度
+// Len 获取当前连接长度
 func (m *ConnManager) Len() int {
 	return len(m.connections)
 }
 
-// 添加链接
+// Add 添加链接
 func (m *ConnManager) Add(conn giface.GConnection) {
 	// 保护共享资源Map 加写锁
 	m.connLock.Lock()
@@ -42,7 +42,7 @@ func (m *ConnManager) Add(conn giface.GConnection) {
 	fmt.Println("connection add to ConnManager successfully: conn num = ", m.Len())
 }
 
-// 删除连接
+// Remove 删除连接
 func (m *ConnManager) Remove(conn giface.GConnection) {
 	// 保护共享资源Map 加写锁
 	m.connLock.Lock()
@@ -54,7 +54,7 @@ func (m *ConnManager) Remove(conn giface.GConnection) {
 	fmt.Println("connection Remove ConnID=", conn.GetConnID(), " successfully: conn num = ", m.Len())
 }
 
-// 通过ConnID获取链接
+// Get 通过ConnID获取链接
 func (m *ConnManager) Get(connID uint32) (giface.GConnection, error) {
 	// 保护共享资源Map 加读锁
 	m.connLock.RLock()
@@ -67,7 +67,7 @@ func (m *ConnManager) Get(connID uint32) (giface.GConnection, error) {
 	}
 }
 
-// 清除并停止所有连接
+// ClearConn 清除并停止所有连接
 func (m *ConnManager) ClearConn() {
 	// 保护共享资源Map 加写锁
 	m.connLock.Lock()
